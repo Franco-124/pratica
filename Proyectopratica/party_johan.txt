@@ -1,0 +1,7 @@
+------Factura evento----
+----------------------------
+Responsable: johan
+Nombre evento: party
+Fecha: 2024-12-03 11:43:09
+Monto: 2000
+Presupuesto restante: 1000.0

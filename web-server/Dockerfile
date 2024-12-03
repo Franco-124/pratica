@@ -1,15 +1,10 @@
-FROM python:3.10-slim  
+FROM python:3.10
 
 WORKDIR /app
+COPY requirements.txt /web-server/requirements.txt
 
-# Copiar los requisitos
-COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-# Actualizar pip y luego instalar las dependencias
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir --upgrade -r /app/requirements.txt
+COPY . /app
 
-# Copiar el resto de la aplicación
-COPY . /app/
-
-CMD ["uvicorn" ,"main:app","--host","0.0.0.0","--port","80"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

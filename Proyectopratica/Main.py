@@ -1,7 +1,8 @@
 import asyncio
+import getpass
 try:
     from Evento.usuario import registrar_usuario, buscar_usuario_id
-    from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados
+    from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados,eliminar_evento
     from Evento.Guardar_info import guardar_informacion
     from Evento.filtusuarios import filtrar_usuarios, filtrar_eventos
     from Evento.Pagos import pagar_evento
@@ -25,7 +26,8 @@ def main():
         print("7. Guardar información")
         print("8. Filtrar usuarios y eventos")
         print("9. Pagar evento")
-        print("10. Salir")
+        print("10. Eliminar evento")
+        print("11- Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -48,7 +50,11 @@ def main():
         elif opcion == '9':
             pagar_evento_menu(usuarios, eventos)
         elif opcion == '10':
-            print("Saliendo del programa...")
+            event_name=input("Ingrese el nombre del evento que desea eliminar: ")
+            eliminar_eventos(eventos, event_name)
+        elif opcion=='11':
+            print("Saliendo del sistema")
+            guardar_informacion(usuarios ,eventos)
             break
         else:
             print("Opción no válida, por favor intente de nuevo.")
@@ -72,7 +78,7 @@ def mostrar_usuarios(usuarios):
 
 def buscar_usuario_por_id(usuarios):
     try:
-        id_buscar = input("\nIngrese el ID del usuario que desea buscar: ")
+        id_buscar = getpass.getpass("\nIngrese el ID del usuario que desea buscar: ")
         buscar_usuario_id(usuarios, id_buscar)
     except Exception as e:
         print(f"Error al buscar usuario: {e}")
@@ -84,8 +90,11 @@ def registrar_eventos(usuarios, eventos):
         print(f"Error al registrar eventos: {e}")
 
 def mostrar_eventos(eventos):
-    for evento in eventos:
-        print(evento)
+    if eventos:
+        for evento in eventos:
+            print(f"Eventos registrado \n {evento}")
+    else:
+        print("No hay eventos registrados")
 
 def filtrar_usuarios_y_eventos(usuarios, eventos):
     try:
@@ -114,6 +123,12 @@ def pagar_evento_menu(usuarios, eventos):
         asyncio.run(pagar_evento(usuario, evento))
     except Exception as e:
         print(f"Error al pagar evento: {e}")
+
+def eliminar_eventos(eventos,evento):
+    try:
+        eliminar_evento(eventos,evento)
+    except Exception as e:
+        print(f"Error al eliminar evento: {e}")
 
 if __name__ == "__main__":
     main()

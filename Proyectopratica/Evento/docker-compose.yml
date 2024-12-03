@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Evento/Dockerfile
+    container_name: Evento-container
+    volumes:
+      - ../:/Proyecto_practica  # Sincroniza el directorio raíz con '/Proyecto_practica' en el contenedor
+    command: python main.py

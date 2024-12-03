@@ -63,4 +63,29 @@ def mostrar_cantidad_eventos_registrados(eventos: list):
     for event in eventos:
         cont+=1
     print(f"Hay {cont} eventos registrados ")
-    
+
+
+def eliminar_evento(eventos, evento_name):
+    print("Está a punto de eliminar un evento")
+    opcion = input("¿Desea borrar el evento (si/no)? ").lower()
+
+    if opcion == "si":
+        encontrado = False
+        for evento in eventos:
+            if evento['nombre'] == evento_name:
+                eventos.remove(evento)
+                print(f"Evento '{evento_name}' eliminado con éxito")
+                encontrado = True
+                break
+        
+        if not encontrado:
+            print("Evento no encontrado")
+    else:
+        print("Operación cancelada") 
+
+    if eventos:
+        print("Eventos registrados:")
+        for evento in eventos:
+            print(evento)
+    else:
+        print("No hay eventos registrados")

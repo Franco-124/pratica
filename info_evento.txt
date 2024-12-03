@@ -2,6 +2,6 @@
 
  nombre: johan 
  id: s123
- edad: 3 
- email: 3
+ edad: 18 
+ email: johan@
 ----Eventos Registrados----
