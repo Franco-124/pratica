@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app-csv:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-csv-container
+    volumes:
+      - ./app:/app  # Sincroniza el directorio local 'app' con '/app' en el contenedor
+    command: bash -c "while true; do sleep 1; done"
