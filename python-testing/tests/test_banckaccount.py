@@ -1,19 +1,13 @@
-import unittest
-import os
-
-from src.bank_account import BankAccount
-from src.bank_account import is_api_available # Se importa función que se agregó fuera de la clse
+import unittest, os
 from unittest.mock import patch
+from src.exceptions import InsufficientFundsError, WithdrawalTimeRestrictionError
+from src.bank_account import BankAccount
+
 
 class BankAccountTests(unittest.TestCase):
 
-    # Con setUp lo que se hace es definir desde el inicio los valores que tendrán las funciones.
-    # Es una manera de evitar escribir los valores iniciales desde el inicio, en este caso,todas las variables iniciarán con $1,000
-    # 
     def setUp(self) -> None:
         self.account = BankAccount(balance=1000, log_file="transaction_log.txt")
-        # Aquí se define la API key:
-        self.api = 'e3980208bf01ec653aba9aee3c2d6f70f6ae8b066d2545e379b9e0ef92e9de25'
 
     def tearDown(self) -> None:
         if os.path.exists(self.account.log_file):
@@ -23,35 +17,62 @@ class BankAccountTests(unittest.TestCase):
         with open(filename, "r") as f:
             return len(f.readlines())
 
-    def test_deposit(self):
+    def test_deposit_increases_balance_by_deposit_amount(self):
         new_balance = self.account.deposit(500)
         self.assertEqual(new_balance, 1500, "El balance no es igual")
 
-    def test_withdraw(self):
+    @patch("src.bank_account.datetime")
+    def test_withdraw_decreases_balance_by_withdraw_amount(self, mock_datetime):
+        mock_datetime.now.return_value.hour = 10
         new_balance = self.account.withdraw(200)
         self.assertEqual(new_balance, 800, "El balance no es igual")
-    
-    def test_get_balance(self):
-        self.assertEqual(self.account.get_balance(), 1000, "El balance no es igual")
 
-    def test_transfer(self):
-        new_balance = self.account.transfer(200)
-        self.assertEqual(new_balance, 800, "El balance no es igual")
+    def test_get_balance_returns_current_balance(self):
+        self.assertEqual(self.account.get_balance(), 1000)
 
-    def test_transaction_log(self):
-        new_balance = self.account.deposit(500)
+    def test_deposit_logs_transaction(self):
+        self.account.deposit(500)
         self.assertTrue(os.path.exists("transaction_log.txt"))
 
-    def test_count_transactions(self):
-        assert self._count_lines(self.account.log_file) == 1
+    def test_withdraw_logs_each_transaction(self):
+        self.assertEqual(self._count_lines(self.account.log_file), 1)
         self.account.deposit(500)
-        assert self._count_lines(self.account.log_file) == 2
+        self.assertEqual(self._count_lines(self.account.log_file), 2)
 
-    # Se agrega conversión a USD, condicionada a disponibilidad de API
-    # Se utiliza skipUnless en caso de que la API no esté disponible.
-    @unittest.skipUnless(is_api_available('e3980208bf01ec653aba9aee3c2d6f70f6ae8b066d2545e379b9e0ef92e9de25'), 'API no disponible')
-    @patch('src.bank_account.get_exchange_rate')
-    def test_convert_to_usd(self, mock_get_exchange_rate):
-        mock_get_exchange_rate.return_value = 20  # Ejemplo de tipo de cambio
-        usd_balance = self.account.convert_to_usd(self.api)
-        assert usd_balance == 50  # 1000/20 = 50
+    @patch("src.bank_account.datetime")
+    def test_withdraw_raises_error_when_insufficient_funds(self, mock_datetime):
+        mock_datetime.now.return_value.hour = 10
+        with self.assertRaises(InsufficientFundsError):
+            self.account.withdraw(2000)
+
+    @patch("src.bank_account.datetime")
+    def test_withdraw_during_bussines_hours(self, mock_datetime):
+        mock_datetime.now.return_value.hour = 8
+        new_balance = self.account.withdraw(100)
+        self.assertEqual(new_balance, 900)
+
+    @patch("src.bank_account.datetime")
+    def test_withdraw_disallow_before_bussines_hours(self, mock_datetime):
+        mock_datetime.now.return_value.hour = 7
+        with self.assertRaises(WithdrawalTimeRestrictionError):
+            self.account.withdraw(100)
+
+    @patch("src.bank_account.datetime")
+    def test_withdraw_disallow_after_bussines_hours(self, mock_datetime):
+        mock_datetime.now.return_value.hour = 18
+        with self.assertRaises(WithdrawalTimeRestrictionError):
+            self.account.withdraw(100)
+
+
+    def test_deposit_multiple_ammounts(self):
+
+        test_cases = [
+            {"ammount": 100, "expected": 1100},
+            {"ammount": 3000, "expected": 4000},
+            {"ammount": 4500, "expected": 5500},
+        ]
+        for case in test_cases:
+            with self.subTest(case=case):
+                self.account = BankAccount(balance=1000, log_file="transactions.txt")
+                new_balance = self.account.deposit(case["ammount"])
+                self.assertEqual(new_balance, case["expected"])

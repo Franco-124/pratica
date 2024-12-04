@@ -8,15 +8,19 @@ class Calculator(unittest.TestCase):
     def test_rest(self):
         assert subtract(2, 1) == 1
     
-    def test_division_by_zero(self):
-        with self.assertRaises(ZeroDivisionError):
-            divide(10, 0)
-            def division(a,b):    
-                if b == 0:        
-                    raise ValueError("La divisón por cero no esta permitida")    
-                else:        
-                     return a / b
-    
     def test_multiply(self):
-        assert multiply(3, 2) == 6
+        result = multiply(2, 3)
+        expected = 6
+        assert result == expected
+    
+    def test_division(self):
+        result = divide(10 ,2)
+        expected = 5
+        assert result == expected
+    
+    
+    def test_divide_by_cero(self):
+        with self.assertRaises(ValueError):
+            divide(10, 0)
+
      
