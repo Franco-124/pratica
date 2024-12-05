@@ -2,6 +2,19 @@
 
  nombre: johan 
  id: s123
- edad: 3 
- email: 3
+ edad: 18 
+ email: johan@
 ----Eventos Registrados----
+
+ nombre: party
+ hora: 02:30:00, 
+ duracion :2 horas, 
+ ubicacion amaga 
+ tipo: social 
+ Costo evento : 2000 
+ nombre: eg
+ hora: 03:30:00, 
+ duracion :2 horas, 
+ ubicacion minas 
+ tipo: social 
+ Costo evento : 2000 

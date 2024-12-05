@@ -24,5 +24,23 @@ def filtrar_eventos(eventos,hora):
         print(event)
 
 
+#Filtrar numeros de eventos por tipo
+
+def filtrar_numero_evento_por_tipo(eventos):
+    tipos = set(evento['tipo']for evento in eventos)
+    numero_eventos_tipo ={tipo:0 for tipo in tipos}
+
+    for evento in eventos:
+        tipo=evento['tipo']
+        if tipo in numero_eventos_tipo:
+           numero_eventos_tipo[tipo] += 1
+    
+    return numero_eventos_tipo
+    
+
+
+
+
+
 
 

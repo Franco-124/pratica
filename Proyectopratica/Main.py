@@ -1,13 +1,14 @@
 import asyncio
 import getpass
 try:
-    from Evento.usuario import registrar_usuario, buscar_usuario_id
-    from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados,eliminar_evento
+    from Evento.usuario import registrar_usuario, buscar_usuario
+    from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados, eliminar_evento
     from Evento.Guardar_info import guardar_informacion
-    from Evento.filtusuarios import filtrar_usuarios, filtrar_eventos
+    from Evento.filtusuarios import filtrar_usuarios, filtrar_eventos, filtrar_numero_evento_por_tipo
     from Evento.Pagos import pagar_evento
     from datetime import datetime
-
+    from Evento.Converstion import convertir_moneda
+    from Evento.Grafica import generate_bar_chart
 except Exception as e:
     print(f"Error {e}")
 
@@ -27,7 +28,9 @@ def main():
         print("8. Filtrar usuarios y eventos")
         print("9. Pagar evento")
         print("10. Eliminar evento")
-        print("11- Salir")
+        print("11. Ver costo de evento en otra moneda")
+        print("12. Crear grafica de eventos")
+        print("13. Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -36,7 +39,7 @@ def main():
         elif opcion == '2':
             mostrar_usuarios(usuarios)
         elif opcion == '3':
-            buscar_usuario_por_id(usuarios)
+            buscar_usuarios(usuarios)
         elif opcion == '4':
             registrar_eventos(usuarios, eventos)
         elif opcion == '5':
@@ -50,19 +53,26 @@ def main():
         elif opcion == '9':
             pagar_evento_menu(usuarios, eventos)
         elif opcion == '10':
-            event_name=input("Ingrese el nombre del evento que desea eliminar: ")
+            event_name = input("Ingrese el nombre del evento que desea eliminar: ")
             eliminar_eventos(eventos, event_name)
-        elif opcion=='11':
-            print("Saliendo del sistema")
-            guardar_informacion(usuarios ,eventos)
-            break
+        elif opcion == "11":
+            moneda_destino = str(input("Ingrese la moneda a la que desea convertir el costo del evento ejemplo(USD,EUR,COP): "))
+            convertir_monedas(eventos, moneda_destino)
+        elif opcion == '12':
+            filtrar_numero_evento_por_tipos(eventos)
+        elif opcion == '13':
+            try:
+                print("Saliendo del sistema")
+                guardar_informacion(usuarios, eventos)
+                break
+            except Exception as e:
+                print(f"Error {e}")
         else:
             print("Opción no válida, por favor intente de nuevo.")
 
 def registrar_usuarios(usuarios):
     try:
         registrar_usuario(usuarios)
-        
     except Exception as e:
         print(f"Error al registrar usuarios: {e}")
 
@@ -76,10 +86,11 @@ def mostrar_usuarios(usuarios):
     for usuario in usuarios:
         print(usuario)
 
-def buscar_usuario_por_id(usuarios):
+def buscar_usuarios(usuarios):
     try:
+        name_buscar = input("\nIngrese el nombre del usuario: ")
         id_buscar = getpass.getpass("\nIngrese el ID del usuario que desea buscar: ")
-        buscar_usuario_id(usuarios, id_buscar)
+        buscar_usuario(usuarios, id_buscar, name_buscar)
     except Exception as e:
         print(f"Error al buscar usuario: {e}")
 
@@ -109,7 +120,7 @@ def filtrar_usuarios_y_eventos(usuarios, eventos):
 def pagar_evento_menu(usuarios, eventos):
     try:
         id_usuario = input("Ingrese el ID del usuario que va a pagar el evento: ")
-        usuario = buscar_usuario_id(usuarios, id_usuario)
+        usuario = buscar_usuario(usuarios, id_usuario)
         if not usuario:
             print("Usuario no encontrado.")
             return
@@ -124,11 +135,24 @@ def pagar_evento_menu(usuarios, eventos):
     except Exception as e:
         print(f"Error al pagar evento: {e}")
 
-def eliminar_eventos(eventos,evento):
+def eliminar_eventos(eventos, evento):
     try:
-        eliminar_evento(eventos,evento)
+        eliminar_evento(eventos, evento)
     except Exception as e:
         print(f"Error al eliminar evento: {e}")
+
+def convertir_monedas(eventos, moneda_destino):
+    try:
+        convertir_moneda(eventos, moneda_destino)
+    except Exception as e:
+        print(f"Error al convertir moneda: {e}")
+
+def filtrar_numero_evento_por_tipos(eventos):
+    numero_eventos_tipo = filtrar_numero_evento_por_tipo(eventos)
+    # Extraer las etiquetas y los valores
+    tipos_evento = list(numero_eventos_tipo.keys())
+    numero_eventos = list(numero_eventos_tipo.values())
+    generate_bar_chart(tipos_evento, numero_eventos)
 
 if __name__ == "__main__":
     main()

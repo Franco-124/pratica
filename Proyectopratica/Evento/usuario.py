@@ -33,20 +33,21 @@ def registrar_usuario(usuarios:list):
 
 
 def encontrar_usuario(func):
-    def wrapper(usuarios:list,id:str):
+    def wrapper(usuarios:list,id:str, nombre: str):
         for user in usuarios:
-            if user['id'] == id:
+            if user['id'] == id and user['nombre'] == nombre:
                 return func(user)
-        print("No encontrado")
+        print("Usuario  no encontrado")
         return None      
     return wrapper
-    
 
 
 @encontrar_usuario
-def buscar_usuario_id(usuario:list):
-    print("Usuario encontrado")
-    print(usuario)
-    return usuario
-    
+def buscar_usuario(usuario:list):
+    if usuario:
+        print(f"Usuario con id  {usuario['id']} y nombre {usuario['nombre']} encontrado")
+        print(usuario)
+        return usuario
+
+        
 
