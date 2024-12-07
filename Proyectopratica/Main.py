@@ -8,6 +8,7 @@ from Evento.Pagos import pagar_evento
 from datetime import datetime
 from Evento.converstion import convertir_moneda
 from Evento.Grafica import generate_bar_chart, generate_pie_chart
+#from Evento.notifier import send_reminder
 
 
 def main():
@@ -30,7 +31,8 @@ def main():
         print("12. Crear grafica bar de eventos")
         print("13 Crear grafica pie de eventos")
         print("14. Filtrar eventos por tipo")
-        print("15. Salir")
+        print("15. Enviar recordatorio de eventos")
+        print("16. Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -65,6 +67,7 @@ def main():
         elif opcion=="14":
             tipo_evento = input("Ingrese el tipo de evento que desea filtrar: ")
             filtrar_eventos_por_tipo(eventos, tipo_evento)
+        
         elif opcion == '15':
             try:
                 print("Saliendo del sistema")
@@ -130,7 +133,7 @@ def filtrar_usuarios_y_eventos(usuarios, eventos):
 
 def pagar_evento_menu(usuarios, eventos):
     try:
-        id_usuario = input("Ingrese el ID del usuario que va a pagar el evento: ")
+        id_usuario = getpass.getpass("Ingrese el ID del usuario que va a pagar el evento: ")
         usuario = buscar_usuario_id(usuarios, id_usuario)
         if not usuario:
             print("Usuario no encontrado.")

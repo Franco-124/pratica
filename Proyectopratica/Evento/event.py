@@ -2,14 +2,17 @@
 
 from datetime import datetime
 from Evento.usuario import buscar_usuario_id
+from datetime import datetime
 
 def registrar_evento(usuarios: list, eventos: list):
     try:
         nombre = input("Ingrese nombre del evento: ")
         hora = (lambda: datetime.strptime(input("Ingrese la hora (HH:MM): "), "%H:%M").time() if True else None)()
         duracion = str(input("Duracion del evento: ejemplo (2 horas): "))
-        ubicacion = str(input("Ingrese ubicacion del evento: "))
+        ubicacion = str(input("Ingrese ubicacion del evento, ejemplo(America/Bogota) "))
         tipo = str(input("Ingrese un tipo de evento (social, privado, personalizado): "))
+        fecha = datetime.strptime(input("Ingrese la fecha del evento (DD/MM/YYYY): "), "%d/%m/%Y").strftime("%d/%m/%Y")
+       
         total_Evento = 0
         if tipo.lower() == "social":
             total_Evento = 2000
@@ -46,7 +49,8 @@ def registrar_evento(usuarios: list, eventos: list):
             'duracion': duracion,
             'ubicacion': ubicacion,
             'tipo': tipo,
-            'total_evento': total_Evento
+            'total_evento': total_Evento,
+            'fecha':fecha
         }
         eventos.append(evento)
         print(f"Evento registrado a nombre de {usuario['nombre']} con exito")
