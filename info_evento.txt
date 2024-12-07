@@ -10,23 +10,11 @@
  hora: 02:30:00, 
  duracion :2 horas, 
  ubicacion amaga 
- tipo:  
- Costo evento : 1000 
+ tipo: social 
+ Costo evento : 2000 
  nombre: cumpleaños
  hora: 02:30:00, 
  duracion :2 horas, 
- ubicacion amaga 
- tipo: social 
- Costo evento : 2000 
- nombre: party2
- hora: 02:30:00, 
- duracion :2 horas, 
- ubicacion amaga 
+ ubicacion amag 
  tipo: privado 
  Costo evento : 3000 
- nombre: party3
- hora: 02:30:00, 
- duracion :3 horas, 
- ubicacion minas 
- tipo: social 
- Costo evento : 2000 

@@ -13,13 +13,10 @@ class BankAccount:
             with open(self.log_file, "a") as f:
                 f.write(f"{message}\n")
 
-    def deposit(self, ammount):
-        if ammount < 0:
-            raise ValueError("Deposit amount must be positive")
-        if ammount > 0:
-            self.balance += ammount
-            self._log_transaction(f"Deposited {ammount}. New balance: {self.balance}")
-        
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            self._log_transaction(f"Deposited {amount}. New balance: {self.balance}")
         return self.balance
 
     def withdraw(self, amount):

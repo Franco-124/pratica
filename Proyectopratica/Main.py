@@ -1,16 +1,14 @@
 import asyncio
 import getpass
-try:
-    from Evento.usuario import registrar_usuario, buscar_usuario
-    from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados, eliminar_evento
-    from Evento.Guardar_info import guardar_informacion
-    from Evento.filtusuarios import filtrar_usuarios, filtrar_eventos, filtrar_numero_evento_por_tipo
-    from Evento.Pagos import pagar_evento
-    from datetime import datetime
-    from Evento.Converstion import convertir_moneda
-    from Evento.Grafica import generate_bar_chart
-except Exception as e:
-    print(f"Error {e}")
+from Evento.usuario import registrar_usuario, buscar_usuario_id
+from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados, eliminar_evento, mostrar_eventos_for_tipo 
+from Evento.Guardar_info import guardar_informacion
+from Evento.filtusuarios import filtrar_usuarios, filtrar_eventos, filtrar_numero_evento_por_tipo
+from Evento.Pagos import pagar_evento
+from datetime import datetime
+from Evento.converstion import convertir_moneda
+from Evento.Grafica import generate_bar_chart, generate_pie_chart
+
 
 def main():
     usuarios = []
@@ -29,8 +27,10 @@ def main():
         print("9. Pagar evento")
         print("10. Eliminar evento")
         print("11. Ver costo de evento en otra moneda")
-        print("12. Crear grafica de eventos")
-        print("13. Salir")
+        print("12. Crear grafica bar de eventos")
+        print("13 Crear grafica pie de eventos")
+        print("14. Filtrar eventos por tipo")
+        print("15. Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -47,7 +47,7 @@ def main():
         elif opcion == '6':
             mostrar_cantidad_eventos(eventos)
         elif opcion == '7':
-            guardar_informacion(usuarios, eventos)
+            guardar_informacion_Evento(usuarios, eventos)
         elif opcion == '8':
             filtrar_usuarios_y_eventos(usuarios, eventos)
         elif opcion == '9':
@@ -59,11 +59,16 @@ def main():
             moneda_destino = str(input("Ingrese la moneda a la que desea convertir el costo del evento ejemplo(USD,EUR,COP): "))
             convertir_monedas(eventos, moneda_destino)
         elif opcion == '12':
-            filtrar_numero_evento_por_tipos(eventos)
+            generate_bar_charts(eventos)
         elif opcion == '13':
+            generate_pie_charts(eventos)
+        elif opcion=="14":
+            tipo_evento = input("Ingrese el tipo de evento que desea filtrar: ")
+            filtrar_eventos_por_tipo(eventos, tipo_evento)
+        elif opcion == '15':
             try:
                 print("Saliendo del sistema")
-                guardar_informacion(usuarios, eventos)
+                guardar_informacion_Evento(usuarios, eventos)
                 break
             except Exception as e:
                 print(f"Error {e}")
@@ -75,6 +80,13 @@ def registrar_usuarios(usuarios):
         registrar_usuario(usuarios)
     except Exception as e:
         print(f"Error al registrar usuarios: {e}")
+
+    
+def guardar_informacion_Evento(usuarios, eventos):
+    try:
+        guardar_informacion(usuarios, eventos)
+    except Exception as e:
+        print(f"Error al guardar información: {e}")
 
 def mostrar_cantidad_eventos(eventos):
     try:
@@ -88,9 +100,8 @@ def mostrar_usuarios(usuarios):
 
 def buscar_usuarios(usuarios):
     try:
-        name_buscar = input("\nIngrese el nombre del usuario: ")
         id_buscar = getpass.getpass("\nIngrese el ID del usuario que desea buscar: ")
-        buscar_usuario(usuarios, id_buscar, name_buscar)
+        buscar_usuario_id(usuarios, id_buscar)
     except Exception as e:
         print(f"Error al buscar usuario: {e}")
 
@@ -120,7 +131,7 @@ def filtrar_usuarios_y_eventos(usuarios, eventos):
 def pagar_evento_menu(usuarios, eventos):
     try:
         id_usuario = input("Ingrese el ID del usuario que va a pagar el evento: ")
-        usuario = buscar_usuario(usuarios, id_usuario)
+        usuario = buscar_usuario_id(usuarios, id_usuario)
         if not usuario:
             print("Usuario no encontrado.")
             return
@@ -147,12 +158,26 @@ def convertir_monedas(eventos, moneda_destino):
     except Exception as e:
         print(f"Error al convertir moneda: {e}")
 
-def filtrar_numero_evento_por_tipos(eventos):
+def generate_bar_charts(eventos):
     numero_eventos_tipo = filtrar_numero_evento_por_tipo(eventos)
     # Extraer las etiquetas y los valores
     tipos_evento = list(numero_eventos_tipo.keys())
     numero_eventos = list(numero_eventos_tipo.values())
     generate_bar_chart(tipos_evento, numero_eventos)
+
+def generate_pie_charts(eventos):
+    numero_eventos_tipo = filtrar_numero_evento_por_tipo(eventos)
+    # Extraer las etiquetas y los valores
+    tipos_evento = list(numero_eventos_tipo.keys())
+    numero_eventos = list(numero_eventos_tipo.values())
+    generate_pie_chart(tipos_evento, numero_eventos)
+
+
+def filtrar_eventos_por_tipo(eventos, tipo_evento):
+    try:
+        mostrar_eventos_for_tipo(eventos, tipo_evento)
+    except Exception as e:
+        print(f"Error al filtrar eventos por tipo: {e}")
 
 if __name__ == "__main__":
     main()

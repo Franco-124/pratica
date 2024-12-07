@@ -89,3 +89,24 @@ def eliminar_evento(eventos, evento_name):
             print(evento)
     else:
         print("No hay eventos registrados")
+
+
+
+
+def filtrar_eventos_tipo(func):
+    def wrapper (eventos:list, tipo)->dict:
+        eventos_filtrados = list(filter(lambda item: item['tipo']==tipo, eventos))
+        if eventos_filtrados is not None:
+            print(f"Eventos encontrados de tipo {tipo}")
+            return func(eventos_filtrados)
+        else:
+            print(f"Eventos de tipo {tipo} no encontrado")
+    return wrapper
+
+
+@filtrar_eventos_tipo
+def mostrar_eventos_for_tipo(eventos:list)->dict:
+    print("Eventos registrados")
+    print(eventos)
+    return eventos
+
