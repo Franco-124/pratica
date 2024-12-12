@@ -1,5 +1,5 @@
 #Aca vamos a registrar eventos por cliente usando el decorador de usuario
-
+from .buscar_hora import give_info
 from datetime import datetime
 from Evento.usuario import buscar_usuario_id
 from datetime import datetime
@@ -12,7 +12,9 @@ def registrar_evento(usuarios: list, eventos: list):
         ubicacion = str(input("Ingrese ubicacion del evento, ejemplo(America/Bogota) "))
         tipo = str(input("Ingrese un tipo de evento (social, privado, personalizado): "))
         fecha = datetime.strptime(input("Ingrese la fecha del evento (DD/MM/YYYY): "), "%d/%m/%Y").strftime("%d/%m/%Y")
-       
+
+
+        
         total_Evento = 0
         if tipo.lower() == "social":
             total_Evento = 2000
@@ -22,10 +24,17 @@ def registrar_evento(usuarios: list, eventos: list):
             total_Evento = 4000
         else:
             total_Evento = 1000
-
+        
+        for event in eventos:
+            if event['ubicacion'] == ubicacion and event['hora'] == hora:
+                print(f"Ya hay un evento programado para el {fecha} en {ubicacion} a las {hora}")
+                return
+        
         nombre_usuario = input("Ingrese el usuario de la persona responsable del evento: ")
         id = str(input("Ingrese el id de la persona responsable: "))
         
+
+    
         usuario = None
         while not usuario:
             usuario = buscar_usuario_id(usuarios, id)
@@ -53,7 +62,8 @@ def registrar_evento(usuarios: list, eventos: list):
             'fecha':fecha
         }
         eventos.append(evento)
-        print(f"Evento registrado a nombre de {usuario['nombre']} con exito")
+        print(give_info(eventos, nombre ,ubicacion))
+        
         return eventos
 
     except ValueError as e:

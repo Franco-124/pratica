@@ -1,0 +1,14 @@
+----Usuarios registrados-----
+
+ nombre: johan 
+ id: s123
+ edad: 18 
+ email: johan@gmail.com
+----Eventos Registrados----
+
+ nombre: party
+ hora: 02:30:00, 
+ duracion :2 horas, 
+ ubicacion America/Bogota 
+ tipo: social 
+ Costo evento : 2000 
