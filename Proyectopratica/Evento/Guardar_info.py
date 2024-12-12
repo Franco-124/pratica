@@ -1,4 +1,8 @@
 #guardar información de eventos y usuarios en archivos
+from datetime import datetime
+import json
+
+
 
 def guardar_informacion(usuarios: list, eventos: list):
     try:
@@ -12,3 +16,22 @@ def guardar_informacion(usuarios: list, eventos: list):
             print("Informacion de eventos guardada exitosamente")
     except Exception as e:
         print(f"Error {e}")
+
+
+def guardar_archivos_en_formato_json(usuarios: list, eventos: list):
+    eventos_serializables = []
+    for evento in eventos:
+        evento_serializable = evento.copy()
+        if isinstance(evento_serializable['hora'], datetime.time):
+            evento_serializable['hora'] = evento_serializable['hora'].strftime("%H:%M")
+        eventos_serializables.append(evento_serializable)
+    info = usuarios + eventos_serializables
+    try:
+        with open("evento_info_json.json" , mode ="a")as file:
+            json.dump(info, file, indent=4)
+            print("Archivo json guardado exitosamente")
+    
+    except Exception as e:
+        print(f"Error al intentar guardar el json {e}")
+            
+        

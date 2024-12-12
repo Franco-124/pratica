@@ -1,4 +1,4 @@
-import time
+"""import time
 import notify2
 from threading import Thread
 
@@ -14,4 +14,4 @@ def send_reminder(reminder_text, interval_minutes):
 
     thread = Thread(target=notify)
     thread.daemon = True
-    thread.start()
+    thread.start()"""
