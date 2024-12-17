@@ -1,7 +1,7 @@
 #Aca vamos a registrar eventos por cliente usando el decorador de usuario
 from .buscar_hora import give_info
 from datetime import datetime
-from Evento.usuario import buscar_usuario_id
+from Evento.UI import buscar_usuario_id
 from datetime import datetime
 
 def registrar_evento(usuarios: list, eventos: list):

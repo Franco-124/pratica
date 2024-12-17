@@ -1,6 +1,6 @@
 import asyncio
 import getpass
-from Evento.usuario import registrar_usuario, buscar_usuario_id
+from Evento.UI import  Register,buscar_usuario_id
 from Evento.event import registrar_evento, mostrar_cantidad_eventos_registrados, eliminar_evento, mostrar_eventos_for_tipo 
 from Evento.Guardar_info import guardar_informacion, guardar_archivos_en_formato_json
 from Evento.filtusuarios import filtrar_usuarios, filtrar_eventos, filtrar_numero_evento_por_tipo
@@ -81,7 +81,7 @@ def main():
 
 def registrar_usuarios(usuarios):
     try:
-        registrar_usuario(usuarios)
+        Register.create_user_registration(usuarios)
     except Exception as e:
         print(f"Error al registrar usuarios: {e}")
 
