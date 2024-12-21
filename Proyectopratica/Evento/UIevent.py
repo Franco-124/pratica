@@ -3,8 +3,6 @@ from tkinter import messagebox
 from .buscar_hora import give_info
 from datetime import datetime
 from Evento.UIuser import buscar_usuario_id
-from datetime import datetime
-
 
 usuarios = []
 
@@ -70,16 +68,12 @@ class Register_event:
         entry_fecha = tk.Entry(root, **entry_style)
         entry_fecha.grid(row=10, column=1, padx=20, pady=5, sticky="nsew")
 
-
-        button_register = tk.Button(root, text="Register", command=lambda: Register_event.registrar_evento(usuarios, root,eventos, entry_nombre, entry_hora, entry_duracion, entry_ubicacion, entry_tipo, entry_fecha), **label_style)
+        button_register = tk.Button(root, text="Register", command=lambda: registrar_evento(usuarios, root, eventos, entry_nombre, entry_hora, entry_duracion, entry_ubicacion, entry_tipo, entry_fecha), **label_style)
         button_register.grid(row=11, column=0, columnspan=3, padx=10, pady=5, sticky="nsew")
 
         root.mainloop()
 
-  
-
-
-def registrar_evento(usuarios: list,root, eventos: list , nombre: str, hora: str, duracion: str, ubicacion: str, tipo: str, fecha: str):
+def registrar_evento(usuarios: list, root, eventos: list, nombre: str, hora: str, duracion: str, ubicacion: str, tipo: str, fecha: str):
     try:
         nombre = nombre.get()
         hora = hora.get()
@@ -88,8 +82,14 @@ def registrar_evento(usuarios: list,root, eventos: list , nombre: str, hora: str
         tipo = tipo.get()
         fecha = fecha.get()
 
+        # Formatear la fecha
+        try:
+            fecha_obj = datetime.strptime(fecha, "%d/%m/%Y")
+            fecha_formateada = fecha_obj.strftime("%Y-%m-%d")
+        except ValueError:
+            messagebox.showerror("Error", "Formato de fecha inválido. Use el formato DD/MM/YYYY.")
+            return
 
-        
         total_Evento = 0
         if tipo.lower() == "social":
             total_Evento = 2000
@@ -102,61 +102,84 @@ def registrar_evento(usuarios: list,root, eventos: list , nombre: str, hora: str
         
         for event in eventos:
             if event['ubicacion'] == ubicacion and event['hora'] == hora:
-                print(f"Ya hay un evento programado para el {fecha} en {ubicacion} a las {hora}")
+                messagebox.showerror("Error", f"Ya hay un evento programado para el {fecha_formateada} en {ubicacion} a las {hora}")
                 return
-        
-        nombre_usuario = input("Ingrese el usuario de la persona responsable del evento: ")
-        id = str(input("Ingrese el id de la persona responsable: "))
-        
 
-    
-        usuario = None
-        while not usuario:
-            usuario = buscar_usuario_id(usuarios, id)
-            if not usuario:
-                print(f"Usuario con id {id} no encontrado, intente de nuevo")
-                id = str(input("Ingrese el id de la persona responsable: "))
-
-        if usuario['edad'] < 18:
-            print("No puede registrar un evento siendo menor de edad")
-            return
-        
-        if usuario['presupuesto']<1000:
-            print("No puede registrar un evento ,--Presupuesto insuficiente--")
-            return 
-
-        evento = {
-            'nombre_usuario': usuario['nombre'],
-            'id': id,
-            'nombre': nombre,
-            'hora': hora,
-            'duracion': duracion,
-            'ubicacion': ubicacion,
-            'tipo': tipo,
-            'total_evento': total_Evento,
-            'fecha':fecha
-        }
-        eventos.append(evento)
-        print(give_info(eventos, nombre ,ubicacion))
-
-        print("Evento registrado con éxito")
         root.destroy()
         
-        return eventos
+        # Crear nueva ventana para ingresar usuario y ID
+        user_root = tk.Tk()
+        user_root.geometry("400x400")
+        user_root.title("User Information")
+        label_style = {"bg": "lightblue", "fg": "black", "font": ("Arial", 12)}
+        entry_style = {"bg": "white", "fg": "black", "font": ("Arial", 12)}
+
+        label_nombre_usuario = tk.Label(user_root, text="Enter user name", **label_style)
+        label_nombre_usuario.grid(row=1, column=0, padx=20, pady=5, sticky="nsew")
+
+        entry_nombre_usuario = tk.Entry(user_root, **entry_style)
+        entry_nombre_usuario.grid(row=1, column=1, padx=20, pady=5, sticky="nsew")
+
+        label_id = tk.Label(user_root, text="User ID", **label_style)
+        label_id.grid(row=2, column=0, padx=20, pady=5, sticky="nsew")
+
+        entry_id = tk.Entry(user_root, show="*" , **entry_style)
+        entry_id.grid(row=2, column=1, padx=20, pady=5, sticky="nsew")
+
+        button_register_user = tk.Button(user_root, text="Register", command=lambda: check_and_register(user_root, entry_id, entry_nombre_usuario, usuarios, eventos, nombre, hora, duracion, ubicacion, tipo, total_Evento, fecha_formateada), **label_style)
+        button_register_user.grid(row=3, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
+
+        user_root.mainloop()
 
     except ValueError as e:
-        print(f"Entrada inválida: Error {e}")
+        messagebox.showerror("Error", f"Entrada inválida: {e}")
     except Exception as e:
-        print(f"Error al registrar evento: {e}")
+        messagebox.showerror("Error", f"Error al registrar evento: {e}")
 
-############################################################################################################
+def check_and_register(root, entry_id, entry_nombre, usuarios, eventos, nombre, hora, duracion, ubicacion, tipo, total_Evento, fecha):
+    """
+    Metodo que verifica el id y el nombre usuario
+
+    recibe parametros de usuarios,eventos, y los entrys de id y nombre
+
+    El metodo no retorna nada
+    """
+    id = entry_id.get()
+    nombre_usuario = entry_nombre.get()
+
+    usuario = buscar_usuario_id(usuarios, id)
+    if not usuario:
+        messagebox.showerror("Error", "Usuario no encontrado, ingrese un ID válido")
+        return
+
+    if usuario['edad'] < 18:
+        messagebox.showerror("Error", "No puede registrar un evento siendo menor de edad")
+        return
+    
+    if usuario['presupuesto'] < 1000:
+        messagebox.showerror("Error", "No puede registrar un evento, presupuesto insuficiente")
+        return 
+
+    evento = {
+        'nombre_usuario': usuario['nombre'],
+        'id': id,
+        'nombre': nombre,
+        'hora': hora,
+        'duracion': duracion,
+        'ubicacion': ubicacion,
+        'tipo': tipo,
+        'total_evento': total_Evento,
+        'fecha': fecha
+    }
+    eventos.append(evento)
+    messagebox.showinfo("Éxito", "Evento registrado con éxito")
+    print(give_info(eventos, nombre, ubicacion))
+
+    root.destroy()
 
 def mostrar_cantidad_eventos_registrados(eventos: list):
-    cont=0
-    for event in eventos:
-        cont+=1
-    print(f"Hay {cont} eventos registrados ")
-
+    cont = len(eventos)
+    print(f"Hay {cont} eventos registrados")
 
 def eliminar_evento(eventos, evento_name):
     print("Está a punto de eliminar un evento")
@@ -183,22 +206,18 @@ def eliminar_evento(eventos, evento_name):
     else:
         print("No hay eventos registrados")
 
-
-
-
 def filtrar_eventos_tipo(func):
-    def wrapper (eventos:list, tipo)->dict:
-        eventos_filtrados = list(filter(lambda item: item['tipo']==tipo, eventos))
-        if eventos_filtrados is not None:
+    def wrapper(eventos: list, tipo) -> dict:
+        eventos_filtrados = list(filter(lambda item: item['tipo'] == tipo, eventos))
+        if eventos_filtrados:
             print(f"Eventos encontrados de tipo {tipo}")
             return func(eventos_filtrados)
         else:
-            print(f"Eventos de tipo {tipo} no encontrado")
+            print(f"Eventos de tipo {tipo} no encontrados")
     return wrapper
 
-
 @filtrar_eventos_tipo
-def mostrar_eventos_for_tipo(eventos:list)->dict:
+def mostrar_eventos_for_tipo(eventos: list) -> dict:
     print("Eventos registrados")
     print(eventos)
     return eventos
