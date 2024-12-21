@@ -99,6 +99,8 @@ class Register:
         except Exception as e:
             print(f"Error: {e}")
 
+            
+
 def encontrar_usuario(func):
     def wrapper(usuarios: list, id: str):
         for user in usuarios:

@@ -1,7 +1,3 @@
 ----Usuarios registrados-----
 
- nombre: johan 
- id: s123
- edad: 18 
- email: johan@gmail.com
 ----Eventos Registrados----
