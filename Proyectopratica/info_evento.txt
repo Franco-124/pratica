@@ -9,6 +9,6 @@
  nombre: party
  hora: 2:30, 
  duracion :2 horas, 
- ubicacion minas,amaga 
+ ubicacion Minas,Amaga 
  tipo: social 
  Costo evento : 2000 

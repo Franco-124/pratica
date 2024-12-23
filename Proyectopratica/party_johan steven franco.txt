@@ -1,0 +1,7 @@
+------Factura evento----
+----------------------------
+Responsable: johan steven franco
+Nombre evento: party
+Fecha: 2024-12-22 19:37:49
+Monto: 2000
+Presupuesto restante: 1000.0
